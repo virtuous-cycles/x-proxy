@@ -1,3 +1,6 @@
+# Tokens
+oauth2_token.json
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
