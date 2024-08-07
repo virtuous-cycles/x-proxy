@@ -6,4 +6,3 @@ from . import pull_mentions_route
 from . import post_tweet_route
 from . import get_tweet_route
 from . import search_tweets_route
-from . import upload_media_route
