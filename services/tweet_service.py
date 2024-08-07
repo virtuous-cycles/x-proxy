@@ -1,18 +1,17 @@
 class TweetService:
-    def __init__(self, oauth_handler):
-        self.oauth_handler = oauth_handler
+    def __init__(self, oauth2_handler):
+        self.oauth2_handler = oauth2_handler
 
     def post_reply(self, tweet_id, text):
-        client = self.oauth_handler.get_client()
+        client = self.oauth2_handler.get_client()
         response = client.create_tweet(
             text=text,
-            in_reply_to_tweet_id=tweet_id,
-            user_auth=False
+            in_reply_to_tweet_id=tweet_id
         )
         return response.data['id']
 
     def pull_mentions(self, user_id):
-        client = self.oauth_handler.get_client()
+        client = self.oauth2_handler.get_client()
         response = client.get_users_mentions(
             id=user_id,
             max_results=15,
@@ -34,21 +33,20 @@ class TweetService:
         return response.data
 
     def post_tweet(self, text, in_reply_to_tweet_id=None, media_ids=None):
-        client = self.oauth_handler.get_client()
+        client = self.oauth2_handler.get_client()
         response = client.create_tweet(
             text=text,
             in_reply_to_tweet_id=in_reply_to_tweet_id,
-            media_ids=media_ids,
-            user_auth=False
+            media_ids=media_ids
         )
         return response.data['id']
 
     def get_tweet(self, tweet_id):
-        client = self.oauth_handler.get_client()
+        client = self.oauth2_handler.get_client()
         response = client.get_tweet(tweet_id)
         return response.data
 
     def search_recent_tweets(self, query):
-        client = self.oauth_handler.get_client()
+        client = self.oauth2_handler.get_client()
         response = client.search_recent_tweets(query)
         return response.data

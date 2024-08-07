@@ -1,17 +1,13 @@
-from .oauth_handler import OAuth2Handler
 from .tweet_service import TweetService
 from .media_service import MediaService
 from config import Config
 
 class XService:
-    def __init__(self):
-        self.oauth_handler = OAuth2Handler(
-            client_id=Config.CLIENT_ID,
-            client_secret=Config.CLIENT_SECRET,
-            redirect_uri=Config.REDIRECT_URI
-        )
-        self.tweet_service = TweetService(self.oauth_handler)
-        self.media_service = MediaService()
+    def __init__(self, oauth2_handler, oauth1_api):
+        self.oauth2_handler = oauth2_handler
+        self.oauth1_api = oauth1_api
+        self.tweet_service = TweetService(self.oauth2_handler)
+        self.media_service = MediaService(self.oauth1_api)
 
     def post_reply(self, tweet_id, text):
         return self.tweet_service.post_reply(tweet_id, text)
