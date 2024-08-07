@@ -15,7 +15,31 @@ class TweetService:
 
     def pull_mentions(self, user_id):
         client = self.oauth2_handler.get_client()
-        response = client.get_users_mentions(id=user_id, max_results=15)
+        response = client.get_users_mentions(
+            id=user_id,
+            max_results=15, # default is 10
+            # since_id (int | str | None) – Returns results with a Tweet ID greater than (that is, more recent than) the specified ‘since’ Tweet ID. There are limits to the number of Tweets that can be accessed through the API. If the limit of Tweets has occurred since the since_id, the since_id will be forced to the oldest ID available.
+            # start_time (datetime.datetime | str | None) – YYYY-MM-DDTHH:mm:ssZ (ISO 8601/RFC 3339). The oldest UTC timestamp from which the Tweets will be provided. Timestamp is in second granularity and is inclusive (for example, 12:00:01 includes the first second of the minute).
+            expansions=[
+                'author_id', 
+                'referenced_tweets.id',
+                'referenced_tweets.id.author_id',
+                'edit_history_tweet_ids',
+                'in_reply_to_user_id',
+                'attachments.media_keys',
+                'attachments.poll_ids',
+                'geo.place_id',
+                'entities.mentions.username',
+            ],
+            tweet_fields=[
+                'username', 
+                'public_metrics', 
+                'referenced_tweets',
+                'conversation_id',
+                'created_at',
+                'attachments'
+            ]
+        )
         return response.data
 
     def post_tweet(self, text, in_reply_to_tweet_id=None, media_url=None):
@@ -42,7 +66,28 @@ class TweetService:
 
     def get_tweet(self, tweet_id):
         client = self.oauth2_handler.get_client()
-        response = client.get_tweet(tweet_id)
+        response = client.get_tweet(
+            id=tweet_id,
+            expansions=[
+                'author_id', 
+                'referenced_tweets.id',
+                'referenced_tweets.id.author_id',
+                'edit_history_tweet_ids',
+                'in_reply_to_user_id',
+                'attachments.media_keys',
+                'attachments.poll_ids',
+                'geo.place_id',
+                'entities.mentions.username',
+            ],
+            tweet_fields=[
+                'username', 
+                'public_metrics', 
+                'referenced_tweets',
+                'conversation_id',
+                'created_at',
+                'attachments'
+            ]
+        )
         return response.data
 
     def search_recent_tweets(self, query):
