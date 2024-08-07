@@ -2,14 +2,6 @@ class TweetService:
     def __init__(self, oauth2_handler):
         self.oauth2_handler = oauth2_handler
 
-    def post_reply(self, tweet_id, text):
-        client = self.oauth2_handler.get_client()
-        response = client.create_tweet(
-            text=text,
-            in_reply_to_tweet_id=tweet_id
-        )
-        return response.data['id']
-
     def pull_mentions(self, user_id):
         client = self.oauth2_handler.get_client()
         response = client.get_users_mentions(
@@ -37,7 +29,8 @@ class TweetService:
         response = client.create_tweet(
             text=text,
             in_reply_to_tweet_id=in_reply_to_tweet_id,
-            media_ids=media_ids
+            media_ids=media_ids,
+            user_auth=False
         )
         return response.data['id']
 

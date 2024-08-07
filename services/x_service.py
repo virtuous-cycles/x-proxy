@@ -9,9 +9,6 @@ class XService:
         self.tweet_service = TweetService(self.oauth2_handler)
         self.media_service = MediaService(self.oauth1_api)
 
-    def post_reply(self, tweet_id, text):
-        return self.tweet_service.post_reply(tweet_id, text)
-
     def pull_mentions(self):
         return self.tweet_service.pull_mentions(Config.TRUTH_TERMINAL_TWITTER_ID)
 
