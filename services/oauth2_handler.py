@@ -25,7 +25,7 @@ class OAuth2Handler:
         self.refresh_thread = None
 
     def setup_oauth2_handler(self):
-        os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'  # Allow OAuth2 over HTTP for development
+        # os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'  # Allow OAuth2 over HTTP for development
         self.oauth2_user_handler = MyOAuth2UserHandler(
             client_id=self.client_id,
             redirect_uri=self.redirect_uri,

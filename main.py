@@ -20,7 +20,7 @@ def create_app(config_class=Config):
     @app.route('/')
     def hello():
         return "Greetings, your pseudo-X-API is up and running!"
-
+    
     return app
 
 if __name__ == '__main__':
