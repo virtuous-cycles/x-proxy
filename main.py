@@ -4,22 +4,22 @@ from config import Config
 from services.x_service import XService
 from services.oauth_setup import setup_and_validate_oauth
 
-def register_routes(app):
-    @app.route('/')
-    def hello():
-        return "Greetings, your pseudo-X-API is up and running!"
-
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
 
-    oauth2_handler, oauth1_handler = setup_and_validate_oauth(config_class)
+    oauth2_handler, oauth1_handler = setup_and_validate_oauth(app.config)
+
+    oauth2_handler.start_refresh_thread()
 
     x_service = XService(oauth2_handler, oauth1_handler.api)
     app.x_service = x_service
 
     app.register_blueprint(api_bp, url_prefix='/api')
-    register_routes(app)
+
+    @app.route('/')
+    def hello():
+        return "Greetings, your pseudo-X-API is up and running!"
 
     return app
 
