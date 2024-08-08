@@ -1,4 +1,5 @@
 import os
+from config import Config
 
 class TweetService:
     def __init__(self, oauth2_handler, media_service):
@@ -13,13 +14,11 @@ class TweetService:
         )
         return response.data['id']
 
-    def pull_mentions(self, user_id):
+    def pull_mentions(self):
         client = self.oauth2_handler.get_client()
         response = client.get_users_mentions(
-            id=user_id,
-            max_results=15, # default is 10
-            # since_id (int | str | None) – Returns results with a Tweet ID greater than (that is, more recent than) the specified ‘since’ Tweet ID. There are limits to the number of Tweets that can be accessed through the API. If the limit of Tweets has occurred since the since_id, the since_id will be forced to the oldest ID available.
-            # start_time (datetime.datetime | str | None) – YYYY-MM-DDTHH:mm:ssZ (ISO 8601/RFC 3339). The oldest UTC timestamp from which the Tweets will be provided. Timestamp is in second granularity and is inclusive (for example, 12:00:01 includes the first second of the minute).
+            id=Config.TRUTH_TERMINAL_TWITTER_ID,
+            max_results=15,
             expansions=[
                 'author_id', 
                 'referenced_tweets.id',
@@ -45,7 +44,7 @@ class TweetService:
     def post_tweet(self, text, in_reply_to_tweet_id=None, media_url=None):
         client = self.oauth2_handler.get_client()
         media_ids = None
-        
+
         if media_url:
             temp_file_path = self.media_service.download_media(media_url)
             if temp_file_path:
