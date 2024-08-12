@@ -9,6 +9,7 @@ python = ">=3.10.0,<3.12"
 tweepy = "^4.14.0"
 flask = "^3.0.3"
 api = "^0.0.7"
+pyairtable = "2.3.3"
 
 [tool.pyright]
 # https://github.com/microsoft/pyright/blob/main/docs/configuration.md
