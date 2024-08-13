@@ -1,5 +1,5 @@
 from flask import request, jsonify, current_app
-from . import api_bp
+from api import api_bp
 from auth import token_required
 
 @api_bp.route('/get_tweet', methods=['GET'])
