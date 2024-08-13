@@ -1,7 +1,7 @@
 # Quick API Guide
 
 ## Overview
-This guide covers the basic API routes implemented using Flask in your current project. These routes include functionalities to get a tweet, search for tweets, and post a tweet. Authentication is handled using a token.
+This guide covers the API routes implemented using Flask in your current project. These routes include functionalities to get tweets, search for tweets, post tweets, manage draft tweets, and pull mentions. Authentication is handled using a token.
 
 ## Endpoints
 
@@ -31,7 +31,6 @@ This guide covers the basic API routes implemented using Flask in your current p
           "error": "Missing tweet_id"
         }
         ```
-      - See [`get_tweet_route.py`](rag://rag_source_6)
 
 2. **Search Tweets**
     - **Endpoint:** `/api/search_tweets`
@@ -62,7 +61,6 @@ This guide covers the basic API routes implemented using Flask in your current p
           "error": "Missing query"
         }
         ```
-      - See [`search_tweets_route.py`](rag://rag_source_1)
 
 3. **Post Tweet**
     - **Endpoint:** `/api/post_tweet`
@@ -92,7 +90,81 @@ This guide covers the basic API routes implemented using Flask in your current p
           "error": "Missing text"
         }
         ```
-      - See [`post_tweet_route.py`](rag://rag_source_2)
+
+4. **Get Drafts**
+    - **Endpoint:** `/api/get_drafts`
+    - **Method:** `GET`
+    - **Headers:**
+        ```http
+        Authorization: Bearer <API_SECRET_KEY>
+        ```
+    - **Response:**
+      - On Success:
+        ```json
+        {
+          "drafts": [
+            {
+              "id": "<draft_id>",
+              "fields": {
+                "content": "<draft_content>",
+                ...
+              }
+            },
+            ...
+          ]
+        }
+        ```
+
+5. **Post Draft Tweet**
+    - **Endpoint:** `/api/post_draft_tweet`
+    - **Method:** `POST`
+    - **Headers:**
+        ```http
+        Authorization: Bearer <API_SECRET_KEY>
+        ```
+    - **Request Body:**
+      ```json
+      {
+        "draft_tweet_record_id": "<draft_tweet_record_id>"
+      }
+      ```
+    - **Response:**
+      - On Success:
+        ```json
+        {
+          "success": true,
+          "tweet_id": "<tweet_id>",
+          "tweet_url": "<tweet_url>"
+        }
+        ```
+      - On Failure:
+        ```json
+        {
+          "error": "Draft tweet not found"
+        }
+        ```
+
+6. **Pull Mentions**
+    - **Endpoint:** `/api/pull_mentions`
+    - **Method:** `GET`
+    - **Headers:**
+        ```http
+        Authorization: Bearer <API_SECRET_KEY>
+        ```
+    - **Response:**
+      - On Success:
+        ```json
+        {
+          "mentions": [
+            {
+              "id": "<tweet_id>",
+              "text": "<tweet_text>",
+              ...
+            },
+            ...
+          ]
+        }
+        ```
 
 ## Authentication
 All routes are protected and require an Authorization header with a bearer token. The token is validated against the `API_SECRET_KEY` set in your environment variables.
@@ -100,18 +172,18 @@ All routes are protected and require an Authorization header with a bearer token
 ## Application Setup
 To run the application, use the following steps:
 1. Ensure all dependencies are installed from `pyproject.toml`.
-2. Set the required environment variables for OAuth and API configurations as defined in [`config.py`](rag://rag_source_8).
+2. Set the required environment variables for OAuth and API configurations as defined in `config.py`.
 3. Run the application:
     ```sh
     python main.py
     ```
 
 ### Flask Blueprint
-All API routes are registered under a blueprint:
-- [`api_bp`](rag://rag_source_1) in `api/__init__.py` and then registered in the app in `main.py`.
+All API routes are registered under a blueprint `api_bp` in `api/__init__.py` and then registered in the app in `main.py`.
 
 ## Additional Information
 - OAuth setup and validation are handled in `services/oauth_setup.py`.
 - Services communicate with the external API (Twitter) via a custom `XService` class.
+- The `CombinedServices` class in `combined_services.py` handles operations that involve both Airtable and Twitter services.
 
 For more details on the implementation, see the individual route files and the `main.py` file.
