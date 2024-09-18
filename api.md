@@ -3,6 +3,10 @@
 ## Overview
 This guide covers the API routes implemented using Flask in your current project. These routes include functionalities to get tweets, search for tweets, post tweets, manage draft tweets, and pull mentions. Authentication is handled using a token.
 
+## Project Structure
+The project now includes a new file:
+- `/services/process_x_response.py`: Contains utility functions for processing X API responses.
+
 ## Endpoints
 
 1. **Get Tweet**
@@ -21,7 +25,24 @@ This guide covers the API routes implemented using Flask in your current project
           "tweet": {
             "id": "<tweet_id>",
             "text": "<tweet_text>",
-            ...
+            "author": {
+              "id": "<author_id>",
+              "name": "<author_name>",
+              "username": "<author_username>"
+            },
+            "referenced_tweets": [
+              {
+                "id": "<referenced_tweet_id>",
+                "text": "<referenced_tweet_text>"
+              }
+            ],
+            "media": [
+              {
+                "media_key": "<media_key>",
+                "type": "<media_type>",
+                "url": "<media_url>"
+              }
+            ]
           }
         }
         ```
@@ -49,9 +70,25 @@ This guide covers the API routes implemented using Flask in your current project
             {
               "id": "<tweet_id>",
               "text": "<tweet_text>",
-              ...
-            },
-            ...
+              "author": {
+                "id": "<author_id>",
+                "name": "<author_name>",
+                "username": "<author_username>"
+              },
+              "referenced_tweets": [
+                {
+                  "id": "<referenced_tweet_id>",
+                  "text": "<referenced_tweet_text>"
+                }
+              ],
+              "media": [
+                {
+                  "media_key": "<media_key>",
+                  "type": "<media_type>",
+                  "url": "<media_url>"
+                }
+              ]
+            }
           ]
         }
         ```
@@ -159,7 +196,24 @@ This guide covers the API routes implemented using Flask in your current project
             {
               "id": "<tweet_id>",
               "text": "<tweet_text>",
-              ...
+              "author": {
+                "id": "<author_id>",
+                "name": "<author_name>",
+                "username": "<author_username>"
+              },
+              "referenced_tweets": [
+                {
+                  "id": "<referenced_tweet_id>",
+                  "text": "<referenced_tweet_text>"
+                }
+              ],
+              "media": [
+                {
+                  "media_key": "<media_key>",
+                  "type": "<media_type>",
+                  "url": "<media_url>"
+                }
+              ]
             },
             ...
           ]
@@ -184,6 +238,7 @@ All API routes are registered under a blueprint `api_bp` in `api/__init__.py` an
 ## Additional Information
 - OAuth setup and validation are handled in `services/oauth_setup.py`.
 - Services communicate with the external API (Twitter) via a custom `XService` class.
-- The `CombinedServices` class in `combined_services.py` handles operations that involve both Airtable and Twitter services.
+- The `CombinedServices` class in `services/combined_services.py` handles operations that involve both Airtable and Twitter services.
+- The `process_x_response` function in `services/process_x_response.py` processes X API responses to include expanded data (author information, referenced tweets, media attachments) in the tweet objects.
 
 For more details on the implementation, see the individual route files and the `main.py` file.

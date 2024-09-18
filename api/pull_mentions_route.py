@@ -6,4 +6,4 @@ from auth import token_required
 @token_required
 def pull_mentions():
     mentions = current_app.x_service.pull_mentions()
-    return jsonify({'mentions': [tweet.data for tweet in mentions]})
+    return jsonify({'mentions': mentions})

@@ -9,4 +9,4 @@ def get_tweet():
     if not tweet_id:
         return jsonify({'error': 'Missing tweet_id'}), 400
     tweet = current_app.x_service.get_tweet(tweet_id)
-    return jsonify({'tweet': tweet.data if tweet else None})
+    return jsonify({'tweet': tweet if tweet else None})

@@ -9,4 +9,4 @@ def search_tweets():
     if not query:
         return jsonify({'error': 'Missing query'}), 400
     tweets = current_app.x_service.search_recent_tweets(query)
-    return jsonify({'tweets': [tweet.data for tweet in tweets]})
+    return jsonify({'tweets': tweets})
