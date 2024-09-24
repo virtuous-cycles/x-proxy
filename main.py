@@ -5,6 +5,7 @@ from services.x_service import XService
 from services.oauth_setup import setup_and_validate_oauth
 from services.airtable_service import AirtableService
 from services.combined_services import CombinedServices
+from error_handlers import register_error_handlers
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -24,6 +25,9 @@ def create_app(config_class=Config):
     app.combined_services = combined_services
 
     app.register_blueprint(api_bp, url_prefix='/api')
+
+    # Register error handlers
+    register_error_handlers(app)
 
     @app.route('/')
     def hello():

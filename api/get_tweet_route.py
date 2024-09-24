@@ -19,9 +19,16 @@ def get_tweet():
     if not tweet_id:
         return jsonify({'error': 'Missing tweet_id'}), 400
 
-    result = current_app.x_service.get_tweet_with_thread(tweet_id)
+    try:
+        result = current_app.x_service.get_tweet_with_thread(tweet_id)
 
-    if not result:
-        return jsonify({'error': 'Tweet not found or unable to retrieve thread'}), 404
+        if not result:
+            return jsonify({'error': 'Tweet not found or unable to retrieve thread'}), 404
 
-    return jsonify(result)
+        return jsonify(result)
+
+    except Exception as e:
+        # Log the error
+        current_app.logger.error(f"Error retrieving tweet {tweet_id}: {str(e)}", exc_info=True)
+        # Re-raise the exception to be handled by the global error handler
+        raise

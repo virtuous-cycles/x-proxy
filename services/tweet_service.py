@@ -1,6 +1,7 @@
 import os
 from config import Config
 from .process_x_response import process_x_response
+from .rate_limit_handler import handle_rate_limit
 
 class TweetService:
     # Common tweet fields to request
@@ -28,11 +29,13 @@ class TweetService:
         self.oauth2_handler = oauth2_handler
         self.media_service = media_service
 
+    @handle_rate_limit
     def post_reply(self, tweet_id, text):
         client = self.oauth2_handler.get_client()
         response = client.create_tweet(text=text, in_reply_to_tweet_id=tweet_id)
         return response.data['id']
 
+    @handle_rate_limit
     def pull_mentions(self):
         client = self.oauth2_handler.get_client()
         response = client.get_users_mentions(
@@ -46,6 +49,7 @@ class TweetService:
         )
         return process_x_response(response)
 
+    @handle_rate_limit
     def post_tweet(self, text, in_reply_to_tweet_id=None, media_url=None):
         client = self.oauth2_handler.get_client()
         media_ids = None
@@ -68,6 +72,7 @@ class TweetService:
         )
         return response.data['id']
 
+    @handle_rate_limit
     def get_tweet(self, tweet_id):
         client = self.oauth2_handler.get_client()
         response = client.get_tweet(
@@ -78,6 +83,7 @@ class TweetService:
         )
         return process_x_response(response)
 
+    @handle_rate_limit
     def search_recent_tweets(self, query):
         client = self.oauth2_handler.get_client()
         response = client.search_recent_tweets(
@@ -88,6 +94,7 @@ class TweetService:
         )
         return process_x_response(response)
 
+    @handle_rate_limit
     def get_conversation_thread(self, tweet_id):
         client = self.oauth2_handler.get_client()
 
