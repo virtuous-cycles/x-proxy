@@ -87,3 +87,35 @@ class TweetService:
             user_fields=self.USER_FIELDS
         )
         return process_x_response(response)
+
+    def get_conversation_thread(self, tweet_id):
+        client = self.oauth2_handler.get_client()
+
+        # First, get the original tweet to find its conversation_id
+        original_tweet = self.get_tweet(tweet_id)
+        if not original_tweet:
+            return None
+
+        conversation_id = original_tweet.get('conversation_id')
+        if not conversation_id:
+            return [original_tweet]  # If there's no conversation_id, return just the original tweet
+
+        # Now search for all tweets in the conversation
+        query = f"conversation_id:{conversation_id}"
+        response = client.search_recent_tweets(
+            query,
+            max_results=25,  # Adjust as necessary
+            expansions=self.EXPANSIONS,
+            tweet_fields=self.TWEET_FIELDS,
+            user_fields=self.USER_FIELDS
+        )
+        thread = process_x_response(response)
+
+        # Ensure the original tweet is in the thread
+        if not any(tweet['id'] == tweet_id for tweet in thread):
+            thread.append(original_tweet)
+
+        # Sort the thread by created_at timestamp
+        thread.sort(key=lambda x: x['created_at'])
+
+        return thread
