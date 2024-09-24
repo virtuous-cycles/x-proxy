@@ -116,6 +116,10 @@ class TweetService:
         )
         thread = process_x_response(response)
 
+        # If no tweets were found in the conversation, return just the requested tweet
+        if not thread:
+            return [requested_tweet]
+
         # Ensure both the requested tweet and root tweet are in the thread
         thread = self.add_tweet_if_missing(thread, requested_tweet)
         thread = self.add_tweet_if_missing(thread, root_tweet)

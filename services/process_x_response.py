@@ -1,10 +1,16 @@
 def process_x_response(response):
+    if not response or not response.data:
+        return None
+
     if not hasattr(response, 'includes'):
         return response.data
 
     includes = response.includes
 
     def process_single_tweet(tweet):
+        if not tweet or not hasattr(tweet, 'data'):
+            return None
+
         processed_tweet = tweet.data.copy()
 
         # Add author information
@@ -32,6 +38,6 @@ def process_x_response(response):
 
     # Handle both single tweet and multiple tweet responses
     if isinstance(response.data, list):
-        return [process_single_tweet(tweet) for tweet in response.data]
+        return [process_single_tweet(tweet) for tweet in response.data if tweet]
     else:
         return process_single_tweet(response.data)
