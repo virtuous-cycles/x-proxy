@@ -5,25 +5,23 @@ from auth import token_required
 @api_bp.route('/get_tweet', methods=['GET'])
 @token_required
 def get_tweet():
+    """
+    Get a tweet along with its context in the conversation.
+
+    Returns:
+    - requested_tweet: The tweet requested by the user
+    - root_tweet: The root tweet of the conversation
+    - ancestor_chain: Chain of tweets from root to the parent of the requested tweet
+    - sibling_tweets: Tweets that share the same parent as the requested tweet, ordered from oldest to newest
+    - children_tweets: Direct replies to the requested tweet, ordered from oldest to newest
+    """
     tweet_id = request.args.get('tweet_id')
     if not tweet_id:
         return jsonify({'error': 'Missing tweet_id'}), 400
 
-    # Get the conversation thread, including the original tweet
-    thread = current_app.x_service.get_conversation_thread(tweet_id)
+    result = current_app.x_service.get_tweet_with_thread(tweet_id)
 
-    if not thread:
-        return jsonify({'error': 'Tweet not found'}), 404
-
-    # Find the original tweet in the thread
-    original_tweet = next((tweet for tweet in thread if tweet['id'] == tweet_id), None)
-
-    if not original_tweet:
-        return jsonify({'error': 'Original tweet not found in the conversation'}), 404
-
-    result = {
-        'original_tweet': original_tweet,
-        'thread': thread
-    }
+    if not result:
+        return jsonify({'error': 'Tweet not found or unable to retrieve thread'}), 404
 
     return jsonify(result)

@@ -91,31 +91,41 @@ class TweetService:
     def get_conversation_thread(self, tweet_id):
         client = self.oauth2_handler.get_client()
 
-        # First, get the original tweet to find its conversation_id
-        original_tweet = self.get_tweet(tweet_id)
-        if not original_tweet:
+        # Get the requested tweet
+        requested_tweet = self.get_tweet(tweet_id)
+        if not requested_tweet:
             return None
 
-        conversation_id = original_tweet.get('conversation_id')
+        conversation_id = requested_tweet.get('conversation_id')
         if not conversation_id:
-            return [original_tweet]  # If there's no conversation_id, return just the original tweet
+            return [requested_tweet]  # If there's no conversation_id, return just the requested tweet
 
-        # Now search for all tweets in the conversation
+        # Get the root tweet of the conversation
+        root_tweet = self.get_tweet(conversation_id)
+        if not root_tweet:
+            return [requested_tweet]  # If we can't get the root tweet, return just the requested tweet
+
+        # Search for all tweets in the conversation
         query = f"conversation_id:{conversation_id}"
         response = client.search_recent_tweets(
             query,
-            max_results=25,  # Adjust as necessary
+            max_results=25,  # Adjust as needed
             expansions=self.EXPANSIONS,
             tweet_fields=self.TWEET_FIELDS,
             user_fields=self.USER_FIELDS
         )
         thread = process_x_response(response)
 
-        # Ensure the original tweet is in the thread
-        if not any(tweet['id'] == tweet_id for tweet in thread):
-            thread.append(original_tweet)
+        # Ensure both the requested tweet and root tweet are in the thread
+        thread = self.add_tweet_if_missing(thread, requested_tweet)
+        thread = self.add_tweet_if_missing(thread, root_tweet)
 
         # Sort the thread by created_at timestamp
         thread.sort(key=lambda x: x['created_at'])
 
+        return thread
+
+    def add_tweet_if_missing(self, thread, tweet):
+        if not any(t['id'] == tweet['id'] for t in thread):
+            thread.append(tweet)
         return thread
