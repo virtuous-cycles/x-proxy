@@ -140,3 +140,16 @@ class TweetService:
         if not any(t['id'] == tweet['id'] for t in thread):
             thread.append(tweet)
         return thread
+
+    @handle_rate_limit
+    def get_home_timeline(self, max_results=15, pagination_token=None):
+        client = self.oauth2_handler.get_client()
+        response = client.get_home_timeline(
+            max_results=max_results,
+            pagination_token=pagination_token,
+            expansions=self.EXPANSIONS,
+            tweet_fields=self.TWEET_FIELDS,
+            user_fields=self.USER_FIELDS,
+            user_auth=False
+        )
+        return process_x_response(response)
