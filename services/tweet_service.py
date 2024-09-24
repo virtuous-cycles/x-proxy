@@ -116,7 +116,7 @@ class TweetService:
         query = f"conversation_id:{conversation_id}"
         response = client.search_recent_tweets(
             query,
-            max_results=25,  # Adjust as needed
+            max_results=100,  # Adjust as needed
             expansions=self.EXPANSIONS,
             tweet_fields=self.TWEET_FIELDS,
             user_fields=self.USER_FIELDS
