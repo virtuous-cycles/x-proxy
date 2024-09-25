@@ -155,7 +155,21 @@ class TweetService:
         return process_x_response(response)
 
     @handle_rate_limit
-    def follow_user(self, target_user_id):
+    def get_user_by_username(self, username):
         client = self.oauth2_handler.get_client()
-        response = client.follow_user(target_user_id, user_auth=False)
+        # Remove @ symbol if present
+        username = username.lstrip('@')
+        response = client.get_user(username=username, user_auth=False)
+        return response.data
+
+    @handle_rate_limit
+    def follow_user(self, username):
+        client = self.oauth2_handler.get_client()
+        # First, get the user ID from the username
+        user_data = self.get_user_by_username(username)
+        if not user_data:
+            raise ValueError(f"User with username {username} not found")
+
+        # Now follow the user using their ID
+        response = client.follow_user(user_data.id, user_auth=False)
         return response.data

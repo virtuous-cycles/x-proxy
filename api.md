@@ -226,7 +226,7 @@ This guide covers the API routes implemented using Flask in your current project
     - **Request Body:**
       ```json
       {
-        "target_user_id": "<user_id_to_follow>"
+        "username": "<twitter_handle>"
       }
       ```
     - **Response:**
@@ -234,7 +234,7 @@ This guide covers the API routes implemented using Flask in your current project
         ```json
         {
           "success": true,
-          "message": "Successfully followed the user.",
+          "message": "Successfully followed user @username.",
           "following": true,
           "pending_follow": false
         }
@@ -243,12 +243,20 @@ This guide covers the API routes implemented using Flask in your current project
         ```json
         {
           "success": true,
-          "message": "Follow request sent. Waiting for user approval.",
+          "message": "Follow request sent to @username. Waiting for user approval.",
           "following": false,
           "pending_follow": true
         }
         ```
-      - On Failure:
+      - On User Not Found:
+        ```json
+        {
+          "success": false,
+          "error": "User not found",
+          "message": "User with username username not found"
+        }
+        ```
+      - On Other Failures:
         ```json
         {
           "success": false,

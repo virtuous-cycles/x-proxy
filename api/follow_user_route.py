@@ -6,20 +6,20 @@ from auth import token_required
 @token_required
 def follow_user():
     data = request.json
-    target_user_id = data.get('target_user_id')
+    username = data.get('username')
 
-    if not target_user_id:
-        return jsonify({'error': 'Missing target_user_id'}), 400
+    if not username:
+        return jsonify({'error': 'Missing username'}), 400
 
     try:
-        result = current_app.x_service.follow_user(target_user_id)
+        result = current_app.x_service.follow_user(username)
 
         if result.get('following') is True and result.get('pending_follow') is False:
-            response_message = "Successfully followed the user."
+            response_message = f"Successfully followed user @{username}."
         elif result.get('following') is False and result.get('pending_follow') is True:
-            response_message = "Follow request sent. Waiting for user approval."
+            response_message = f"Follow request sent to @{username}. Waiting for user approval."
         else:
-            response_message = "Follow operation completed, but the status is unclear."
+            response_message = f"Follow operation for @{username} completed, but the status is unclear."
 
         return jsonify({
             'success': True,
@@ -28,8 +28,14 @@ def follow_user():
             'pending_follow': result.get('pending_follow')
         }), 200
 
+    except ValueError as ve:
+        return jsonify({
+            'success': False,
+            'error': 'User not found',
+            'message': str(ve)
+        }), 404
     except Exception as e:
-        current_app.logger.error(f"Error following user {target_user_id}: {str(e)}", exc_info=True)
+        current_app.logger.error(f"Error following user @{username}: {str(e)}", exc_info=True)
         return jsonify({
             'success': False,
             'error': 'An error occurred while following the user',
