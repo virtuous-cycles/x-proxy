@@ -10,7 +10,8 @@ def init_app():
         post_draft_tweet_route,
         get_tweet_route,
         search_tweets_route,
-        get_home_timeline_route
+        get_home_timeline_route,
+        follow_user_route
     )
 
 # Ensure routes are registered when this module is imported

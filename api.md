@@ -1,11 +1,7 @@
 # Quick API Guide
 
 ## Overview
-This guide covers the API routes implemented using Flask in your current project. These routes include functionalities to get tweets, search for tweets, post tweets, manage draft tweets, pull mentions, and retrieve the home timeline.
-
-## Project Structure
-The project now includes a new file:
-- `/api/get_home_timeline_route.py`: Handles the endpoint for retrieving the home timeline.
+This guide covers the API routes implemented using Flask in your current project. These routes include functionalities to get tweets, search for tweets, post tweets, manage draft tweets, pull mentions, and follow users. Authentication is handled using a token.
 
 ## Endpoints
 
@@ -22,7 +18,7 @@ The project now includes a new file:
       - On Success:
         ```json
         {
-          "requested_tweet": {
+          "tweet": {
             "id": "<tweet_id>",
             "text": "<tweet_text>",
             "author": {
@@ -43,11 +39,7 @@ The project now includes a new file:
                 "url": "<media_url>"
               }
             ]
-          },
-          "root_tweet": { /* Similar structure to requested_tweet */ },
-          "ancestor_chain": [ /* Array of tweets leading to the requested tweet */ ],
-          "sibling_tweets": [ /* Array of tweets with the same parent as the requested tweet */ ],
-          "children_tweets": [ /* Array of direct replies to the requested tweet */ ]
+          }
         }
         ```
       - On Failure:
@@ -224,55 +216,44 @@ The project now includes a new file:
         }
         ```
 
-7. **Get Home Timeline**
-    - **Endpoint:** `/api/get_home_timeline`
-    - **Method:** `GET`
+7. **Follow User**
+    - **Endpoint:** `/api/follow_user`
+    - **Method:** `POST`
     - **Headers:**
         ```http
         Authorization: Bearer <API_SECRET_KEY>
         ```
-    - **Query Parameters:**
-      - `max_results` (integer, optional): The number of tweets to retrieve (default is 100, max 100)
-      - `pagination_token` (string, optional): A token to retrieve the next page of results
+    - **Request Body:**
+      ```json
+      {
+        "target_user_id": "<user_id_to_follow>"
+      }
+      ```
     - **Response:**
-      - On Success:
+      - On Success (Public Account):
         ```json
         {
-          "data": [
-            {
-              "id": "<tweet_id>",
-              "text": "<tweet_text>",
-              "author": {
-                "id": "<author_id>",
-                "name": "<author_name>",
-                "username": "<author_username>"
-              },
-              "referenced_tweets": [
-                {
-                  "id": "<referenced_tweet_id>",
-                  "text": "<referenced_tweet_text>"
-                }
-              ],
-              "media": [
-                {
-                  "media_key": "<media_key>",
-                  "type": "<media_type>",
-                  "url": "<media_url>"
-                }
-              ]
-            },
-            ...
-          ],
-          "meta": {
-            "result_count": <number_of_tweets_returned>,
-            "next_token": "<pagination_token_for_next_page>"
-          }
+          "success": true,
+          "message": "Successfully followed the user.",
+          "following": true,
+          "pending_follow": false
+        }
+        ```
+      - On Success (Private Account):
+        ```json
+        {
+          "success": true,
+          "message": "Follow request sent. Waiting for user approval.",
+          "following": false,
+          "pending_follow": true
         }
         ```
       - On Failure:
         ```json
         {
-          "error": "An error occurred while retrieving the home timeline"
+          "success": false,
+          "error": "An error occurred while following the user",
+          "message": "Detailed error message"
         }
         ```
 
@@ -288,15 +269,13 @@ To run the application, use the following steps:
     python main.py
     ```
 
-## Changes to Existing Endpoints
-- The `get_tweet` endpoint now returns more comprehensive information, including the requested tweet, root tweet of the conversation, ancestor chain, sibling tweets, and children tweets.
-- The `get_home_timeline` endpoint has been added to retrieve the user's home timeline.
+### Flask Blueprint
+All API routes are registered under a blueprint `api_bp` in `api/__init__.py` and then registered in the app in `main.py`.
 
 ## Additional Information
 - OAuth setup and validation are handled in `services/oauth_setup.py`.
 - Services communicate with the external API (Twitter) via a custom `XService` class.
 - The `CombinedServices` class in `services/combined_services.py` handles operations that involve both Airtable and Twitter services.
 - The `process_x_response` function in `services/process_x_response.py` processes X API responses to include expanded data (author information, referenced tweets, media attachments) in the tweet objects.
-- Rate limiting is handled by the `handle_rate_limit` decorator in `services/rate_limit_handler.py`.
 
 For more details on the implementation, see the individual route files and the `main.py` file.

@@ -153,3 +153,9 @@ class TweetService:
             user_auth=False
         )
         return process_x_response(response)
+
+    @handle_rate_limit
+    def follow_user(self, target_user_id):
+        client = self.oauth2_handler.get_client()
+        response = client.follow_user(target_user_id, user_auth=False)
+        return response.data
