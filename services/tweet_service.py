@@ -6,7 +6,7 @@ from .rate_limit_handler import handle_rate_limit
 class TweetService:
     # Common tweet fields to request
     TWEET_FIELDS = [
-        'author_id', 'public_metrics', 'referenced_tweets',
+        'author_id', 'note_tweet', 'public_metrics', 'referenced_tweets',
         'conversation_id', 'created_at', 'attachments'
     ]
 
