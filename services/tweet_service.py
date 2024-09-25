@@ -173,3 +173,15 @@ class TweetService:
         # Now follow the user using their ID
         response = client.follow_user(user_data.id, user_auth=False)
         return response.data
+
+    @handle_rate_limit
+    def unfollow_user(self, username):
+        client = self.oauth2_handler.get_client()
+        # First, get the user ID from the username
+        user_data = self.get_user_by_username(username)
+        if not user_data:
+            raise ValueError(f"User with username {username} not found")
+
+        # Now unfollow the user using their ID
+        response = client.unfollow_user(user_data.id, user_auth=False)
+        return response.data

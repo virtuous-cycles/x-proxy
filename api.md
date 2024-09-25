@@ -1,7 +1,7 @@
 # Quick API Guide
 
 ## Overview
-This guide covers the API routes implemented using Flask in your current project. These routes include functionalities to get tweets, search for tweets, post tweets, manage draft tweets, pull mentions, and follow users. Authentication is handled using a token.
+This guide covers the API routes implemented using Flask in your current project. These routes include functionalities to get tweets, search for tweets, post tweets, manage draft tweets, pull mentions, follow users, and unfollow users. Authentication is handled using a token.
 
 ## Endpoints
 
@@ -261,6 +261,45 @@ This guide covers the API routes implemented using Flask in your current project
         {
           "success": false,
           "error": "An error occurred while following the user",
+          "message": "Detailed error message"
+        }
+        ```
+
+8. **Unfollow User**
+    - **Endpoint:** `/api/unfollow_user`
+    - **Method:** `POST`
+    - **Headers:**
+        ```http
+        Authorization: Bearer <API_SECRET_KEY>
+        ```
+    - **Request Body:**
+      ```json
+      {
+        "username": "<twitter_handle>"
+      }
+      ```
+    - **Response:**
+      - On Success:
+        ```json
+        {
+          "success": true,
+          "message": "Successfully unfollowed user @username.",
+          "following": false
+        }
+        ```
+      - On User Not Found:
+        ```json
+        {
+          "success": false,
+          "error": "User not found",
+          "message": "User with username username not found"
+        }
+        ```
+      - On Other Failures:
+        ```json
+        {
+          "success": false,
+          "error": "An error occurred while unfollowing the user",
           "message": "Detailed error message"
         }
         ```
