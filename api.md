@@ -1,11 +1,13 @@
 # Quick API Guide
 
 ## Overview
+
 This guide covers the API routes implemented using Flask in your current project. These routes include functionalities to get tweets, search for tweets, post tweets, manage draft tweets, pull mentions, follow users, and unfollow users. Authentication is handled using a token.
 
 ## Endpoints
 
 1. **Get Tweet**
+
     - **Endpoint:** `/api/get_tweet`
     - **Method:** `GET`
     - **Headers:**
@@ -13,43 +15,44 @@ This guide covers the API routes implemented using Flask in your current project
         Authorization: Bearer <API_SECRET_KEY>
         ```
     - **Query Parameters:**
-      - `tweet_id` (string): The ID of the tweet to retrieve.
+        - `tweet_id` (string): The ID of the tweet to retrieve.
     - **Response:**
-      - On Success:
-        ```json
-        {
-          "tweet": {
-            "id": "<tweet_id>",
-            "text": "<tweet_text>",
-            "author": {
-              "id": "<author_id>",
-              "name": "<author_name>",
-              "username": "<author_username>"
-            },
-            "referenced_tweets": [
-              {
-                "id": "<referenced_tweet_id>",
-                "text": "<referenced_tweet_text>"
-              }
-            ],
-            "media": [
-              {
-                "media_key": "<media_key>",
-                "type": "<media_type>",
-                "url": "<media_url>"
-              }
-            ]
-          }
-        }
-        ```
-      - On Failure:
-        ```json
-        {
-          "error": "Missing tweet_id"
-        }
-        ```
+        - On Success:
+            ```json
+            {
+                "tweet": {
+                    "id": "<tweet_id>",
+                    "text": "<tweet_text>",
+                    "author": {
+                        "id": "<author_id>",
+                        "name": "<author_name>",
+                        "username": "<author_username>"
+                    },
+                    "referenced_tweets": [
+                        {
+                            "id": "<referenced_tweet_id>",
+                            "text": "<referenced_tweet_text>"
+                        }
+                    ],
+                    "media": [
+                        {
+                            "media_key": "<media_key>",
+                            "type": "<media_type>",
+                            "url": "<media_url>"
+                        }
+                    ]
+                }
+            }
+            ```
+        - On Failure:
+            ```json
+            {
+                "error": "Missing tweet_id"
+            }
+            ```
 
 2. **Search Tweets**
+
     - **Endpoint:** `/api/search_tweets`
     - **Method:** `GET`
     - **Headers:**
@@ -57,45 +60,46 @@ This guide covers the API routes implemented using Flask in your current project
         Authorization: Bearer <API_SECRET_KEY>
         ```
     - **Query Parameters:**
-      - `query` (string): The search query.
+        - `query` (string): The search query.
     - **Response:**
-      - On Success:
-        ```json
-        {
-          "tweets": [
+        - On Success:
+            ```json
             {
-              "id": "<tweet_id>",
-              "text": "<tweet_text>",
-              "author": {
-                "id": "<author_id>",
-                "name": "<author_name>",
-                "username": "<author_username>"
-              },
-              "referenced_tweets": [
-                {
-                  "id": "<referenced_tweet_id>",
-                  "text": "<referenced_tweet_text>"
-                }
-              ],
-              "media": [
-                {
-                  "media_key": "<media_key>",
-                  "type": "<media_type>",
-                  "url": "<media_url>"
-                }
-              ]
+                "tweets": [
+                    {
+                        "id": "<tweet_id>",
+                        "text": "<tweet_text>",
+                        "author": {
+                            "id": "<author_id>",
+                            "name": "<author_name>",
+                            "username": "<author_username>"
+                        },
+                        "referenced_tweets": [
+                            {
+                                "id": "<referenced_tweet_id>",
+                                "text": "<referenced_tweet_text>"
+                            }
+                        ],
+                        "media": [
+                            {
+                                "media_key": "<media_key>",
+                                "type": "<media_type>",
+                                "url": "<media_url>"
+                            }
+                        ]
+                    }
+                ]
             }
-          ]
-        }
-        ```
-      - On Failure:
-        ```json
-        {
-          "error": "Missing query"
-        }
-        ```
+            ```
+        - On Failure:
+            ```json
+            {
+                "error": "Missing query"
+            }
+            ```
 
 3. **Post Tweet**
+
     - **Endpoint:** `/api/post_tweet`
     - **Method:** `POST`
     - **Headers:**
@@ -103,28 +107,29 @@ This guide covers the API routes implemented using Flask in your current project
         Authorization: Bearer <API_SECRET_KEY>
         ```
     - **Request Body:**
-      ```json
-      {
-        "text": "<tweet_text>",
-        "in_reply_to_tweet_id": "<optional: tweet_id>",
-        "media_url": "<optional: media_url>"
-      }
-      ```
+        ```json
+        {
+            "text": "<tweet_text>",
+            "in_reply_to_tweet_id": "<optional: tweet_id>",
+            "media_url": "<optional: media_url>"
+        }
+        ```
     - **Response:**
-      - On Success:
-        ```json
-        {
-          "tweet_id": "<tweet_id>"
-        }
-        ```
-      - On Failure:
-        ```json
-        {
-          "error": "Missing text"
-        }
-        ```
+        - On Success:
+            ```json
+            {
+                "tweet_id": "<tweet_id>"
+            }
+            ```
+        - On Failure:
+            ```json
+            {
+                "error": "Missing text"
+            }
+            ```
 
 4. **Get Drafts**
+
     - **Endpoint:** `/api/get_drafts`
     - **Method:** `GET`
     - **Headers:**
@@ -132,23 +137,24 @@ This guide covers the API routes implemented using Flask in your current project
         Authorization: Bearer <API_SECRET_KEY>
         ```
     - **Response:**
-      - On Success:
-        ```json
-        {
-          "drafts": [
+        - On Success:
+            ```json
             {
-              "id": "<draft_id>",
-              "fields": {
-                "content": "<draft_content>",
+              "drafts": [
+                {
+                  "id": "<draft_id>",
+                  "fields": {
+                    "content": "<draft_content>",
+                    ...
+                  }
+                },
                 ...
-              }
-            },
-            ...
-          ]
-        }
-        ```
+              ]
+            }
+            ```
 
 5. **Post Draft Tweet**
+
     - **Endpoint:** `/api/post_draft_tweet`
     - **Method:** `POST`
     - **Headers:**
@@ -156,28 +162,29 @@ This guide covers the API routes implemented using Flask in your current project
         Authorization: Bearer <API_SECRET_KEY>
         ```
     - **Request Body:**
-      ```json
-      {
-        "draft_tweet_record_id": "<draft_tweet_record_id>"
-      }
-      ```
+        ```json
+        {
+            "draft_tweet_record_id": "<draft_tweet_record_id>"
+        }
+        ```
     - **Response:**
-      - On Success:
-        ```json
-        {
-          "success": true,
-          "tweet_id": "<tweet_id>",
-          "tweet_url": "<tweet_url>"
-        }
-        ```
-      - On Failure:
-        ```json
-        {
-          "error": "Draft tweet not found"
-        }
-        ```
+        - On Success:
+            ```json
+            {
+                "success": true,
+                "tweet_id": "<tweet_id>",
+                "tweet_url": "<tweet_url>"
+            }
+            ```
+        - On Failure:
+            ```json
+            {
+                "error": "Draft tweet not found"
+            }
+            ```
 
 6. **Pull Mentions**
+
     - **Endpoint:** `/api/pull_mentions`
     - **Method:** `GET`
     - **Headers:**
@@ -185,38 +192,39 @@ This guide covers the API routes implemented using Flask in your current project
         Authorization: Bearer <API_SECRET_KEY>
         ```
     - **Response:**
-      - On Success:
-        ```json
-        {
-          "mentions": [
+        - On Success:
+            ```json
             {
-              "id": "<tweet_id>",
-              "text": "<tweet_text>",
-              "author": {
-                "id": "<author_id>",
-                "name": "<author_name>",
-                "username": "<author_username>"
-              },
-              "referenced_tweets": [
+              "mentions": [
                 {
-                  "id": "<referenced_tweet_id>",
-                  "text": "<referenced_tweet_text>"
-                }
-              ],
-              "media": [
-                {
-                  "media_key": "<media_key>",
-                  "type": "<media_type>",
-                  "url": "<media_url>"
-                }
+                  "id": "<tweet_id>",
+                  "text": "<tweet_text>",
+                  "author": {
+                    "id": "<author_id>",
+                    "name": "<author_name>",
+                    "username": "<author_username>"
+                  },
+                  "referenced_tweets": [
+                    {
+                      "id": "<referenced_tweet_id>",
+                      "text": "<referenced_tweet_text>"
+                    }
+                  ],
+                  "media": [
+                    {
+                      "media_key": "<media_key>",
+                      "type": "<media_type>",
+                      "url": "<media_url>"
+                    }
+                  ]
+                },
+                ...
               ]
-            },
-            ...
-          ]
-        }
-        ```
+            }
+            ```
 
 7. **Follow User**
+
     - **Endpoint:** `/api/follow_user`
     - **Method:** `POST`
     - **Headers:**
@@ -224,46 +232,46 @@ This guide covers the API routes implemented using Flask in your current project
         Authorization: Bearer <API_SECRET_KEY>
         ```
     - **Request Body:**
-      ```json
-      {
-        "username": "<twitter_handle>"
-      }
-      ```
+        ```json
+        {
+            "username": "<twitter_handle>"
+        }
+        ```
     - **Response:**
-      - On Success (Public Account):
-        ```json
-        {
-          "success": true,
-          "message": "Successfully followed user @username.",
-          "following": true,
-          "pending_follow": false
-        }
-        ```
-      - On Success (Private Account):
-        ```json
-        {
-          "success": true,
-          "message": "Follow request sent to @username. Waiting for user approval.",
-          "following": false,
-          "pending_follow": true
-        }
-        ```
-      - On User Not Found:
-        ```json
-        {
-          "success": false,
-          "error": "User not found",
-          "message": "User with username username not found"
-        }
-        ```
-      - On Other Failures:
-        ```json
-        {
-          "success": false,
-          "error": "An error occurred while following the user",
-          "message": "Detailed error message"
-        }
-        ```
+        - On Success (Public Account):
+            ```json
+            {
+                "success": true,
+                "message": "Successfully followed user @username.",
+                "following": true,
+                "pending_follow": false
+            }
+            ```
+        - On Success (Private Account):
+            ```json
+            {
+                "success": true,
+                "message": "Follow request sent to @username. Waiting for user approval.",
+                "following": false,
+                "pending_follow": true
+            }
+            ```
+        - On User Not Found:
+            ```json
+            {
+                "success": false,
+                "error": "User not found",
+                "message": "User with username username not found"
+            }
+            ```
+        - On Other Failures:
+            ```json
+            {
+                "success": false,
+                "error": "An error occurred while following the user",
+                "message": "Detailed error message"
+            }
+            ```
 
 8. **Unfollow User**
     - **Endpoint:** `/api/unfollow_user`
@@ -273,56 +281,37 @@ This guide covers the API routes implemented using Flask in your current project
         Authorization: Bearer <API_SECRET_KEY>
         ```
     - **Request Body:**
-      ```json
-      {
-        "username": "<twitter_handle>"
-      }
-      ```
+        ```json
+        {
+            "username": "<twitter_handle>"
+        }
+        ```
     - **Response:**
-      - On Success:
-        ```json
-        {
-          "success": true,
-          "message": "Successfully unfollowed user @username.",
-          "following": false
-        }
-        ```
-      - On User Not Found:
-        ```json
-        {
-          "success": false,
-          "error": "User not found",
-          "message": "User with username username not found"
-        }
-        ```
-      - On Other Failures:
-        ```json
-        {
-          "success": false,
-          "error": "An error occurred while unfollowing the user",
-          "message": "Detailed error message"
-        }
-        ```
+        - On Success:
+            ```json
+            {
+                "success": true,
+                "message": "Successfully unfollowed user @username.",
+                "following": false
+            }
+            ```
+        - On User Not Found:
+            ```json
+            {
+                "success": false,
+                "error": "User not found",
+                "message": "User with username username not found"
+            }
+            ```
+        - On Other Failures:
+            ```json
+            {
+                "success": false,
+                "error": "An error occurred while unfollowing the user",
+                "message": "Detailed error message"
+            }
+            ```
 
 ## Authentication
+
 All routes are protected and require an Authorization header with a bearer token. The token is validated against the `API_SECRET_KEY` set in your environment variables.
-
-## Application Setup
-To run the application, use the following steps:
-1. Ensure all dependencies are installed from `pyproject.toml`.
-2. Set the required environment variables for OAuth and API configurations as defined in `config.py`.
-3. Run the application:
-    ```sh
-    python main.py
-    ```
-
-### Flask Blueprint
-All API routes are registered under a blueprint `api_bp` in `api/__init__.py` and then registered in the app in `main.py`.
-
-## Additional Information
-- OAuth setup and validation are handled in `services/oauth_setup.py`.
-- Services communicate with the external API (Twitter) via a custom `XService` class.
-- The `CombinedServices` class in `services/combined_services.py` handles operations that involve both Airtable and Twitter services.
-- The `process_x_response` function in `services/process_x_response.py` processes X API responses to include expanded data (author information, referenced tweets, media attachments) in the tweet objects.
-
-For more details on the implementation, see the individual route files and the `main.py` file.

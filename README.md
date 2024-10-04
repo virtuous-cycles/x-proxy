@@ -15,7 +15,104 @@ X-Proxy is an API for simplifying X (formerly Twitter) requests for a single aut
 
 ## API Endpoints
 
-For a detailed list of available endpoints and their usage, please refer to the [API Documentation](api.md).
+### Overview
+
+This section covers the API routes implemented using Flask in this project. These routes include functionalities to get tweets, search for tweets, post tweets, manage draft tweets, pull mentions, follow users, and unfollow users. Authentication is handled using a token.
+
+### Authentication
+
+All routes are protected and require an Authorization header with a bearer token. The token is validated against the `API_SECRET_KEY` set in your environment variables.
+
+### Endpoints
+
+1. **Get Tweet**
+
+    - **Endpoint:** `/api/get_tweet`
+    - **Method:** `GET`
+    - **Headers:**
+        ```http
+        Authorization: Bearer <API_SECRET_KEY>
+        ```
+    - **Query Parameters:**
+        - `tweet_id` (string): The ID of the tweet to retrieve.
+    - **Response:** Returns tweet details including author information, referenced tweets, and media.
+
+2. **Search Tweets**
+
+    - **Endpoint:** `/api/search_tweets`
+    - **Method:** `GET`
+    - **Headers:**
+        ```http
+        Authorization: Bearer <API_SECRET_KEY>
+        ```
+    - **Query Parameters:**
+        - `query` (string): The search query.
+    - **Response:** Returns a list of tweets matching the search query.
+
+3. **Post Tweet**
+
+    - **Endpoint:** `/api/post_tweet`
+    - **Method:** `POST`
+    - **Headers:**
+        ```http
+        Authorization: Bearer <API_SECRET_KEY>
+        ```
+    - **Request Body:** JSON object with `text`, optional `in_reply_to_tweet_id`, and optional `media_url`.
+    - **Response:** Returns the ID of the posted tweet.
+
+4. **Get Drafts**
+
+    - **Endpoint:** `/api/get_drafts`
+    - **Method:** `GET`
+    - **Headers:**
+        ```http
+        Authorization: Bearer <API_SECRET_KEY>
+        ```
+    - **Response:** Returns a list of draft tweets.
+
+5. **Post Draft Tweet**
+
+    - **Endpoint:** `/api/post_draft_tweet`
+    - **Method:** `POST`
+    - **Headers:**
+        ```http
+        Authorization: Bearer <API_SECRET_KEY>
+        ```
+    - **Request Body:** JSON object with `draft_tweet_record_id`.
+    - **Response:** Returns the ID and URL of the posted tweet.
+
+6. **Pull Mentions**
+
+    - **Endpoint:** `/api/pull_mentions`
+    - **Method:** `GET`
+    - **Headers:**
+        ```http
+        Authorization: Bearer <API_SECRET_KEY>
+        ```
+    - **Response:** Returns a list of mentions for the authenticated user.
+
+7. **Follow User**
+
+    - **Endpoint:** `/api/follow_user`
+    - **Method:** `POST`
+    - **Headers:**
+        ```http
+        Authorization: Bearer <API_SECRET_KEY>
+        ```
+    - **Request Body:** JSON object with `username`.
+    - **Response:** Returns the result of the follow action.
+
+8. **Unfollow User**
+    - **Endpoint:** `/api/unfollow_user`
+    - **Method:** `POST`
+    - **Headers:**
+        ```http
+        Authorization: Bearer <API_SECRET_KEY>
+        ```
+    - **Request Body:** JSON object with `username`.
+    - **Response:** Returns the result of the unfollow action.
+
+For more detailed information about expected request and response formats for each endpoint, please refer to the [api.md](api.md) file in the project repository.
 
 ## Getting Started
 
@@ -54,16 +151,47 @@ To start the application, run:
 poetry run python main.py
 ```
 
-## Authentication
-
-All API routes are protected and require an Authorization header with a bearer token. The token is validated against the `API_SECRET_KEY` set in your environment variables.
-
 ## Project Structure
 
+The X-Proxy project is organized into several key directories and files:
+
 -   `api/`: Contains route definitions and API logic
+
+    -   `__init__.py`: Initializes the API blueprint and imports all route modules
+    -   Individual route modules (e.g., `get_tweet_route.py`, `post_tweet_route.py`, etc.)
+
 -   `services/`: Houses service classes for interacting with X API and other functionalities
--   `config.py`: Configuration settings
--   `main.py`: Main application entry point
+
+    -   `x_service.py`: Handles interactions with the X (Twitter) API
+    -   `airtable_service.py`: Manages operations with Airtable
+    -   `combined_services.py`: Coordinates operations involving both X and Airtable
+    -   `oauth_setup.py`: Sets up and validates OAuth for X API
+    -   `media_service.py`: Handles media-related operations (upload, download)
+    -   `process_x_response.py`: Processes and enriches X API responses
+
+-   `config.py`: Contains configuration settings and environment variable management
+
+-   `main.py`: Main application entry point, sets up the Flask app and services
+
+-   `error_handlers.py`: Defines custom error handlers for the application
+
+-   `.env.example`: Template for required environment variables
+
+-   `pyproject.toml`: Defines project dependencies and configuration for Poetry
+
+-   `README.md`: Project documentation and setup instructions
+
+-   `api.md`: Detailed API documentation
+
+The project follows a modular structure, separating concerns into different directories and files:
+
+1. API routes are defined in the `api/` directory, with each endpoint having its own file.
+2. Business logic and external service interactions are encapsulated in the `services/` directory.
+3. Configuration is centralized in `config.py`, pulling from environment variables.
+4. The main application setup and running logic is in `main.py`.
+5. Dependencies and project metadata are managed through `pyproject.toml` using Poetry.
+
+This structure promotes maintainability, scalability, and separation of concerns, making it easier to extend and modify the project as needed.
 
 ## Contributing
 
