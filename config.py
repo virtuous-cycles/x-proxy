@@ -19,7 +19,7 @@ class Config:
 
     # Other configurations
     API_SECRET_KEY = os.environ['API_SECRET_KEY']
-    TRUTH_TERMINAL_TWITTER_ID = os.environ['TRUTH_TERMINAL_TWITTER_ID']
+    TWITTER_USER_ID = os.environ['TWITTER_USER_ID']
 
     # Airtable configurations
     AIRTABLE_API_KEY = os.environ['AIRTABLE_API_KEY']
