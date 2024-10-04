@@ -1,22 +1,25 @@
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file if it exists, otherwise Replit should still load its secrets
+load_dotenv()
+
 
 class Config:
     # OAuth 2.0 credentials
-    CLIENT_ID = os.environ['client_id']
-    CLIENT_SECRET = os.environ['client_secret']
-    REDIRECT_URI = os.environ['redirect_uri']
+    CLIENT_ID = os.environ['CLIENT_ID']
+    CLIENT_SECRET = os.environ['CLIENT_SECRET']
+    REDIRECT_URI = os.environ['REDIRECT_URI']
 
     # OAuth 1.0a credentials
-    CONSUMER_KEY = os.environ['consumer_key']
-    CONSUMER_SECRET = os.environ['consumer_secret']
-    ACCESS_TOKEN = os.environ['access_token']
-    ACCESS_TOKEN_SECRET = os.environ['access_token_secret']
-    # ACCESS_TOKEN = os.environ['const_labs_access_token']
-    # ACCESS_TOKEN_SECRET = os.environ['const_labs_access_token_secret']
+    CONSUMER_KEY = os.environ['CONSUMER_KEY']
+    CONSUMER_SECRET = os.environ['CONSUMER_SECRET']
+    ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
+    ACCESS_TOKEN_SECRET = os.environ['ACCESS_TOKEN_SECRET']
 
     # Other configurations
     API_SECRET_KEY = os.environ['API_SECRET_KEY']
-    TRUTH_TERMINAL_TWITTER_ID = os.environ['truth_terminal_twitter_id']
+    TWITTER_USER_ID = os.environ['TWITTER_USER_ID']
 
     # Airtable configurations
     AIRTABLE_API_KEY = os.environ['AIRTABLE_API_KEY']

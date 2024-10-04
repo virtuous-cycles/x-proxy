@@ -3,6 +3,7 @@ from config import Config
 from .process_x_response import process_x_response
 from .rate_limit_handler import handle_rate_limit
 
+
 class TweetService:
     # Common tweet fields to request
     TWEET_FIELDS = [
@@ -32,15 +33,16 @@ class TweetService:
     @handle_rate_limit
     def post_reply(self, tweet_id, text):
         client = self.oauth2_handler.get_client()
-        response = client.create_tweet(text=text, in_reply_to_tweet_id=tweet_id)
+        response = client.create_tweet(
+            text=text, in_reply_to_tweet_id=tweet_id)
         return response.data['id']
 
     @handle_rate_limit
     def pull_mentions(self):
         client = self.oauth2_handler.get_client()
         response = client.get_users_mentions(
-            id=Config.TRUTH_TERMINAL_TWITTER_ID,
-            max_results=10, # default is 10
+            id=Config.TWITTER_USER_ID,
+            max_results=10,  # default is 10
             # since_id (int | str | None) – Returns results with a Tweet ID greater than (that is, more recent than) the specified ‘since’ Tweet ID. There are limits to the number of Tweets that can be accessed through the API. If the limit of Tweets has occurred since the since_id, the since_id will be forced to the oldest ID available.
             # start_time (datetime.datetime | str | None) – YYYY-MM-DDTHH:mm:ssZ (ISO 8601/RFC 3339). The oldest UTC timestamp from which the Tweets will be provided. Timestamp is in second granularity and is inclusive (for example, 12:00:01 includes the first second of the minute).
             expansions=self.EXPANSIONS,
@@ -105,12 +107,14 @@ class TweetService:
 
         conversation_id = requested_tweet.get('conversation_id')
         if not conversation_id:
-            return [requested_tweet]  # If there's no conversation_id, return just the requested tweet
+            # If there's no conversation_id, return just the requested tweet
+            return [requested_tweet]
 
         # Get the root tweet of the conversation
         root_tweet = self.get_tweet(conversation_id)
         if not root_tweet:
-            return [requested_tweet]  # If we can't get the root tweet, return just the requested tweet
+            # If we can't get the root tweet, return just the requested tweet
+            return [requested_tweet]
 
         # Search for all tweets in the conversation
         query = f"conversation_id:{conversation_id}"
