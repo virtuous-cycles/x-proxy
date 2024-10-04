@@ -1,6 +1,22 @@
 # X-Proxy
 
-X-Proxy is an API for simplifying X (formerly Twitter) requests for a single authenticated account. This project provides a set of endpoints that wrap around the X API, making it easier to interact with X's features programmatically. It handles renewing authentication tokens, albeit
+X-Proxy is an API for simplifying X (formerly Twitter) requests for a single authenticated account. This project provides a set of endpoints that wrap around the X API, making it easier to interact with X's features programmatically. While the server is running it should take care of authentication token refreshing.
+
+## Table of Contents
+
+-   [Features](#features)
+-   [API Endpoints](#api-endpoints)
+    -   [Overview](#overview)
+    -   [Authentication](#authentication)
+    -   [Endpoints](#endpoints)
+-   [Getting Started](#getting-started)
+    -   [Prerequisites](#prerequisites)
+    -   [Installation](#installation)
+    -   [Running the Application](#running-the-application)
+-   [Project Structure](#project-structure)
+-   [Contributing](#contributing)
+-   [License](#license)
+-   [Acknowledgements](#acknowledgements)
 
 ## Features
 
@@ -168,6 +184,10 @@ The X-Proxy project is organized into several key directories and files:
     -   `oauth_setup.py`: Sets up and validates OAuth for X API
     -   `media_service.py`: Handles media-related operations (upload, download)
     -   `process_x_response.py`: Processes and enriches X API responses
+    -   `tweet_service.py`: Provides specific tweet-related functionalities
+    -   `oauth2_handler.py`: Manages OAuth2 authentication and token refresh
+    -   `oauth1_handler.py`: Handles OAuth1 authentication
+    -   `rate_limit_handler.py`: Implements rate limiting for X API requests
 
 -   `config.py`: Contains configuration settings and environment variable management
 
@@ -223,6 +243,16 @@ SOFTWARE.
 
 ## Acknowledgements
 
--   X API Documentation
--   Flask
--   Tweepy
+This project was built using the following open-source libraries and tools:
+
+-   [Python](https://www.python.org/) (>=3.10.0, <3.12)
+-   [Poetry](https://python-poetry.org/) for dependency management and packaging
+-   [Tweepy](https://www.tweepy.org/) (^4.14.0) for Twitter API integration
+-   [Flask](https://flask.palletsprojects.com/) (^3.0.3) for web application framework
+-   [API](https://pypi.org/project/api/) (^0.0.7) for API-related functionality
+-   [PyAirtable](https://github.com/gtalarico/pyairtable) (2.3.3) for Airtable integration
+-   [python-dotenv](https://github.com/theskumar/python-dotenv) (^1.0.1) for managing environment variables
+-   [Pyright](https://github.com/microsoft/pyright) for static type checking
+-   [Ruff](https://beta.ruff.rs/docs/) for linting and code style enforcement
+
+We are grateful to the maintainers and contributors of these projects.
