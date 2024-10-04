@@ -23,17 +23,16 @@ X-Proxy is an API for simplifying X (formerly Twitter) requests for a single aut
 -   Get tweets by ID
 -   Search for tweets
 -   Post new tweets (with optional media)
--   Manage draft tweets
+-   ~~Manage draft tweets~~ not yet generalised for public use, sorry!
 -   Pull mentions
 -   Follow and unfollow users
 -   Retrieve home timeline
--   Secure authentication using bearer tokens
 
 ## API Endpoints
 
 ### Overview
 
-This section covers the API routes implemented using Flask in this project. These routes include functionalities to get tweets, search for tweets, post tweets, manage draft tweets, pull mentions, follow users, and unfollow users. Authentication is handled using a token.
+This section covers the API routes implemented using Flask in this project. These routes include functionalities to get tweets, search for tweets, post tweets, ~~manage draft tweets~~, pull mentions, follow users, and unfollow users. Authentication is handled using a token.
 
 ### Authentication
 
@@ -76,26 +75,26 @@ All routes are protected and require an Authorization header with a bearer token
     - **Request Body:** JSON object with `text`, optional `in_reply_to_tweet_id`, and optional `media_url`.
     - **Response:** Returns the ID of the posted tweet.
 
-4. **Get Drafts**
+4. ~~**Get Drafts**~~ not yet generalised for public use, sorry
 
-    - **Endpoint:** `/api/get_drafts`
-    - **Method:** `GET`
-    - **Headers:**
+    - ~~**Endpoint:** `/api/get_drafts`~~
+    - ~~**Method:** `GET`~~
+    - ~~**Headers:**~~
         ```http
         Authorization: Bearer <API_SECRET_KEY>
         ```
-    - **Response:** Returns a list of draft tweets.
+    - ~~**Response:** Returns a list of draft tweets.~~
 
-5. **Post Draft Tweet**
+5. ~~**Post Draft Tweet**~~ not yet generalised for public use, sorry
 
-    - **Endpoint:** `/api/post_draft_tweet`
-    - **Method:** `POST`
-    - **Headers:**
+    - ~~**Endpoint:** `/api/post_draft_tweet`~~
+    - ~~**Method:** `POST`~~
+    - ~~**Headers:**~~
         ```http
         Authorization: Bearer <API_SECRET_KEY>
         ```
-    - **Request Body:** JSON object with `draft_tweet_record_id`.
-    - **Response:** Returns the ID and URL of the posted tweet.
+    - ~~**Request Body:** JSON object with `draft_tweet_record_id`.~~
+    - ~~**Response:** Returns the ID and URL of the posted tweet.~~
 
 6. **Pull Mentions**
 
