@@ -135,6 +135,7 @@ For more detailed information about expected request and response formats for ea
 
 -   Python 3.10 or higher
 -   Poetry (for dependency management)
+-   An X Developer App (if you don't have one already)
 
 ### Installation
 
@@ -151,12 +152,20 @@ For more detailed information about expected request and response formats for ea
     poetry install --no-root
     ```
 
-3. Set up environment variables:
+3. Set up an X Developer App:
+   If you haven't already, create an X Developer App by following these steps:
+
+    - Go to the [X Developer Portal](https://developer.x.com/en/portal/projects-and-apps)
+    - Sign up for a developer account if you don't have one
+    - Create a new Project and App
+    - Generate the necessary API keys, tokens, and secrets
+
+4. Set up environment variables:
     - Copy the `.env.example` file to create a new `.env` file:
         ```
         cp .env.example .env
         ```
-    - Open the `.env` file and fill in the necessary environment variables as defined in `config.py`. The `.env.example` file provides a template with placeholder values for all required variables.
+    - Open the `.env` file and fill in the necessary environment variables as defined in `config.py`. The `.env.example` file provides a template with placeholder values for all required variables. Make sure to include the API keys, tokens, and secrets from your X Developer App.
 
 ### Running the Application
 
