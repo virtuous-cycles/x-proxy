@@ -3,7 +3,6 @@ from config import Config
 from .process_x_response import process_x_response
 from .rate_limit_handler import handle_rate_limit
 
-
 class TweetService:
     # Common tweet fields to request
     TWEET_FIELDS = [
@@ -191,11 +190,36 @@ class TweetService:
         if not response.data:
             return None
 
-        user_data = response.data.data
+        user = response.data
 
-        # Add pinned tweet if available
+        user_data = {
+            'id': user.id,
+            'name': user.name,
+            'username': user.username,
+            'created_at': user.created_at,
+            'description': user.description,
+            'location': user.location,
+            'most_recent_tweet_id': getattr(user, 'most_recent_tweet_id', None),
+            'pinned_tweet_id': getattr(user, 'pinned_tweet_id', None),
+            'profile_image_url': user.profile_image_url,
+            'protected': user.protected,
+            'public_metrics': user.public_metrics,
+            'url': getattr(user, 'url', None),
+            'verified': user.verified,
+            'verified_type': getattr(user, 'verified_type', None)
+        }
+
         if response.includes and 'tweets' in response.includes:
-            user_data['pinned_tweet'] = response.includes['tweets'][0].data
+            for tweet in response.includes['tweets']:
+                tweet_id = tweet.id
+
+                if hasattr(user, 'pinned_tweet_id') and user.pinned_tweet_id is not None:
+                    if tweet_id is not None and int(tweet_id) == int(user.pinned_tweet_id):
+                        user_data['pinned_tweet'] = tweet.data
+
+                if hasattr(user, 'most_recent_tweet_id') and user.most_recent_tweet_id is not None:
+                    if tweet_id is not None and int(tweet_id) == int(user.most_recent_tweet_id):
+                        user_data['most_recent_tweet'] = tweet.data
 
         return user_data
 
