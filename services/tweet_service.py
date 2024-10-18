@@ -26,6 +26,9 @@ class TweetService:
         'verified_type', 'withheld'
     ]
 
+    # Fields specific to user lookup
+    USER_EXPANSIONS = ['pinned_tweet_id', 'most_recent_tweet_id', 'affiliation.user_id']
+
     def __init__(self, oauth2_handler, media_service):
         self.oauth2_handler = oauth2_handler
         self.media_service = media_service
@@ -163,8 +166,36 @@ class TweetService:
         client = self.oauth2_handler.get_client()
         # Remove @ symbol if present
         username = username.lstrip('@')
-        response = client.get_user(username=username, user_auth=False)
-        return response.data
+        response = client.get_user(
+            username=username, 
+            user_fields=self.USER_FIELDS,
+            expansions=self.USER_EXPANSIONS,
+            tweet_fields=self.TWEET_FIELDS
+        )
+        return self.process_user_response(response)
+
+    @handle_rate_limit
+    def get_user_by_id(self, user_id):
+        client = self.oauth2_handler.get_client()
+        response = client.get_user(
+            id=user_id, 
+            user_fields=self.USER_FIELDS,
+            expansions=self.USER_EXPANSIONS,
+            tweet_fields=self.TWEET_FIELDS
+        )
+        return self.process_user_response(response)
+
+    def process_user_response(self, response):
+        if not response.data:
+            return None
+
+        user_data = response.data.data
+
+        # Add pinned tweet if available
+        if response.includes and 'tweets' in response.includes:
+            user_data['pinned_tweet'] = response.includes['tweets'][0].data
+
+        return user_data
 
     @handle_rate_limit
     def follow_user(self, username):
@@ -175,7 +206,7 @@ class TweetService:
             raise ValueError(f"User with username {username} not found")
 
         # Now follow the user using their ID
-        response = client.follow_user(user_data.id, user_auth=False)
+        response = client.follow_user(user_data['id'], user_auth=False)
         return response.data
 
     @handle_rate_limit
@@ -187,5 +218,5 @@ class TweetService:
             raise ValueError(f"User with username {username} not found")
 
         # Now unfollow the user using their ID
-        response = client.unfollow_user(user_data.id, user_auth=False)
+        response = client.unfollow_user(user_data['id'], user_auth=False)
         return response.data
