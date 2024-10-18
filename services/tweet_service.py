@@ -170,7 +170,8 @@ class TweetService:
             username=username, 
             user_fields=self.USER_FIELDS,
             expansions=self.USER_EXPANSIONS,
-            tweet_fields=self.TWEET_FIELDS
+            tweet_fields=self.TWEET_FIELDS,
+            user_auth=False
         )
         return self.process_user_response(response)
 
@@ -181,7 +182,8 @@ class TweetService:
             id=user_id, 
             user_fields=self.USER_FIELDS,
             expansions=self.USER_EXPANSIONS,
-            tweet_fields=self.TWEET_FIELDS
+            tweet_fields=self.TWEET_FIELDS,
+            user_auth=False
         )
         return self.process_user_response(response)
 
