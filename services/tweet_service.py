@@ -3,7 +3,6 @@ from config import Config
 from .process_x_response import process_x_response
 from .rate_limit_handler import handle_rate_limit
 
-
 class TweetService:
     # Common tweet fields to request
     TWEET_FIELDS = [
@@ -192,6 +191,7 @@ class TweetService:
             return None
 
         user = response.data
+
         user_data = {
             'id': user.id,
             'name': user.name,
@@ -199,6 +199,7 @@ class TweetService:
             'created_at': user.created_at,
             'description': user.description,
             'location': user.location,
+            'most_recent_tweet_id': getattr(user, 'most_recent_tweet_id', None),
             'pinned_tweet_id': getattr(user, 'pinned_tweet_id', None),
             'profile_image_url': user.profile_image_url,
             'protected': user.protected,
@@ -210,13 +211,15 @@ class TweetService:
 
         if response.includes and 'tweets' in response.includes:
             for tweet in response.includes['tweets']:
-                if tweet.id == user_data['pinned_tweet_id']:
-                    user_data['pinned_tweet'] = tweet.data
-                elif hasattr(user, 'most_recent_tweet_id') and tweet.id == user.most_recent_tweet_id:
-                    user_data['most_recent_tweet'] = tweet.data
-                # If we can't determine which is which, assume it's the most recent tweet
-                elif 'most_recent_tweet' not in user_data:
-                    user_data['most_recent_tweet'] = tweet.data
+                tweet_id = tweet.id
+
+                if hasattr(user, 'pinned_tweet_id') and user.pinned_tweet_id is not None:
+                    if tweet_id is not None and int(tweet_id) == int(user.pinned_tweet_id):
+                        user_data['pinned_tweet'] = tweet.data
+
+                if hasattr(user, 'most_recent_tweet_id') and user.most_recent_tweet_id is not None:
+                    if tweet_id is not None and int(tweet_id) == int(user.most_recent_tweet_id):
+                        user_data['most_recent_tweet'] = tweet.data
 
         return user_data
 
