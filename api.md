@@ -311,7 +311,58 @@ This guide covers the API routes implemented using Flask in your current project
                 "message": "Detailed error message"
             }
             ```
-
+          
+9. **Get User Profile**
+- **Endpoint:** `/api/get_user_profile`
+- **Method:** `GET`
+- **Headers:**
+    ```http
+    Authorization: Bearer <API_SECRET_KEY>
+    ```
+- **Query Parameters:**
+    - `username` (string, optional): The Twitter username (URL-encoded if contains special characters)
+    - `user_id` (string, optional): The Twitter user ID
+- **Response:**
+    - On Success:
+        ```json
+        {
+            "id": "<user_id>",
+            "name": "<user_name>",
+            "username": "<username>",
+            "created_at": "<account_creation_date>",
+            "description": "<user_bio>",
+            "location": "<user_location>",
+            "pinned_tweet_id": "<pinned_tweet_id>",
+            "profile_image_url": "<profile_image_url>",
+            "protected": false,
+            "public_metrics": {
+                "followers_count": 1000,
+                "following_count": 500,
+                "tweet_count": 5000,
+                "listed_count": 50
+            },
+            "url": "<user_website>",
+            "verified": false,
+            "pinned_tweet": {
+                "id": "<tweet_id>",
+                "text": "<tweet_text>",
+                ...
+            }
+        }
+        ```
+    - On User Not Found:
+        ```json
+        {
+            "error": "User not found"
+        }
+        ```
+    - On Other Failures:
+        ```json
+        {
+            "error": "An error occurred while retrieving the user profile"
+        }
+        ```
+      
 ## Authentication
 
 All routes are protected and require an Authorization header with a bearer token. The token is validated against the `API_SECRET_KEY` set in your environment variables.
