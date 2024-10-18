@@ -191,11 +191,32 @@ class TweetService:
         if not response.data:
             return None
 
-        user_data = response.data.data
+        user = response.data
+        user_data = {
+            'id': user.id,
+            'name': user.name,
+            'username': user.username,
+            'created_at': user.created_at,
+            'description': user.description,
+            'location': user.location,
+            'pinned_tweet_id': getattr(user, 'pinned_tweet_id', None),
+            'profile_image_url': user.profile_image_url,
+            'protected': user.protected,
+            'public_metrics': user.public_metrics,
+            'url': getattr(user, 'url', None),
+            'verified': user.verified,
+            'verified_type': getattr(user, 'verified_type', None)
+        }
 
-        # Add pinned tweet if available
         if response.includes and 'tweets' in response.includes:
-            user_data['pinned_tweet'] = response.includes['tweets'][0].data
+            for tweet in response.includes['tweets']:
+                if tweet.id == user_data['pinned_tweet_id']:
+                    user_data['pinned_tweet'] = tweet.data
+                elif hasattr(user, 'most_recent_tweet_id') and tweet.id == user.most_recent_tweet_id:
+                    user_data['most_recent_tweet'] = tweet.data
+                # If we can't determine which is which, assume it's the most recent tweet
+                elif 'most_recent_tweet' not in user_data:
+                    user_data['most_recent_tweet'] = tweet.data
 
         return user_data
 
