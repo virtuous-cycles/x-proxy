@@ -246,3 +246,28 @@ class TweetService:
         # Now unfollow the user using their ID
         response = client.unfollow_user(user_data['id'], user_auth=False)
         return response.data
+
+    @handle_rate_limit
+    def get_list_tweets(self, list_id, max_results=30, pagination_token=None):
+        """
+        Get tweets from a specified X list.
+
+        Args:
+            list_id (str): The ID of the list to fetch tweets from
+            max_results (int, optional): Number of tweets to return (1-100)
+            pagination_token (str, optional): Token for pagination
+
+        Returns:
+            dict: Processed response containing the list tweets
+        """
+        client = self.oauth2_handler.get_client()
+        response = client.get_list_tweets(
+            id=list_id,
+            max_results=max_results,
+            pagination_token=pagination_token,
+            expansions=self.EXPANSIONS,
+            tweet_fields=self.TWEET_FIELDS,
+            user_fields=self.USER_FIELDS,
+            user_auth=False
+        )
+        return process_x_response(response)
