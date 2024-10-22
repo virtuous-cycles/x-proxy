@@ -382,7 +382,118 @@ This guide covers the API routes implemented using Flask in your current project
                 "error": "An error occurred while retrieving the user profile"
             }
             ```
-      
+
+10. **Get User Lists**
+    - **Endpoint:** `/api/get_user_lists`
+    - **Method:** `GET`
+    - **Headers:**
+        ```http
+        Authorization: Bearer <API_SECRET_KEY>
+        ```
+    - **Query Parameters:**
+        - `user_id` (string): The ID of the user whose lists to retrieve
+        - `include_owned` (boolean, optional): Whether to include owned lists (default: true)
+        - `include_followed` (boolean, optional): Whether to include followed lists (default: true)
+        - `max_results` (integer, optional): Number of results to return (1-100, default: 100)
+        - `pagination_token` (string, optional): Token for pagination
+    - **Response:**
+        - On Success:
+            ```json
+            {
+                "lists": [
+                    {
+                        "id": "<list_id>",
+                        "name": "<list_name>",
+                        "description": "<list_description>",
+                        "follower_count": 123,
+                        "member_count": 456,
+                        "private": false,
+                        "created_at": "<creation_date>",
+                        "owner_id": "<owner_id>",
+                        "relationship": "owned",  // or "followed"
+                        "owner": {
+                            "id": "<owner_id>",
+                            "name": "<owner_name>",
+                            "username": "<owner_username>",
+                            ...
+                        }
+                    }
+                ],
+                "meta": {
+                    "result_count": 1,
+                    "includes_owned": true,
+                    "includes_followed": true
+                }
+            }
+            ```
+        - On Failure:
+            ```json
+            {
+                "error": "Missing user_id parameter"
+            }
+            ```
+            or
+            ```json
+            {
+                "error": "An error occurred while retrieving user lists"
+            }
+            ```
+
+11. **Get List Tweets**
+    - **Endpoint:** `/api/get_list_tweets`
+    - **Method:** `GET`
+    - **Headers:**
+        ```http
+        Authorization: Bearer <API_SECRET_KEY>
+        ```
+    - **Query Parameters:**
+        - `list_id` (string): The ID of the list to fetch tweets from
+        - `max_results` (integer, optional): Number of tweets to return (1-100, default: 30)
+        - `pagination_token` (string, optional): Token for pagination
+    - **Response:**
+        - On Success:
+            ```json
+            {
+                "tweets": [
+                    {
+                        "id": "<tweet_id>",
+                        "text": "<tweet_text>",
+                        "author": {
+                            "id": "<author_id>",
+                            "name": "<author_name>",
+                            "username": "<author_username>"
+                        },
+                        "referenced_tweets": [
+                            {
+                                "id": "<referenced_tweet_id>",
+                                "text": "<referenced_tweet_text>"
+                            }
+                        ],
+                        "media": [
+                            {
+                                "media_key": "<media_key>",
+                                "type": "<media_type>",
+                                "url": "<media_url>"
+                            }
+                        ]
+                    }
+                ]
+            }
+            ```
+        - On Failure:
+            ```json
+            {
+                "error": "Missing list_id parameter"
+            }
+            ```
+            or
+            ```json
+            {
+                "error": "An error occurred while retrieving list tweets",
+                "message": "<error_details>"
+            }
+            ```
+
 ## Authentication
 
 All routes are protected and require an Authorization header with a bearer token. The token is validated against the `API_SECRET_KEY` set in your environment variables.

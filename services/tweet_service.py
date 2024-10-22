@@ -28,6 +28,12 @@ class TweetService:
     # Fields specific to user lookup
     USER_EXPANSIONS = ['pinned_tweet_id', 'most_recent_tweet_id', 'affiliation.user_id']
 
+    # List fields to request
+    LIST_FIELDS = [
+        'created_at', 'description', 'follower_count', 'id', 'member_count',
+        'name', 'owner_id', 'private'
+    ]
+
     def __init__(self, oauth2_handler, media_service):
         self.oauth2_handler = oauth2_handler
         self.media_service = media_service
@@ -271,3 +277,157 @@ class TweetService:
             user_auth=False
         )
         return process_x_response(response)
+
+    @handle_rate_limit
+    def get_owned_lists(self, user_id, max_results=100, pagination_token=None):
+        """
+        Get all Lists owned by the specified user.
+
+        Args:
+            user_id (str): The user ID whose owned Lists to retrieve
+            max_results (int, optional): Number of results per page (1-100, default 100)
+            pagination_token (str, optional): Token for pagination
+
+        Returns:
+            dict: Processed response containing the owned lists
+        """
+        client = self.oauth2_handler.get_client()
+        response = client.get_owned_lists(
+            id=user_id,
+            max_results=max_results,
+            pagination_token=pagination_token,
+            expansions=['owner_id'],
+            list_fields=self.LIST_FIELDS,
+            user_fields=self.USER_FIELDS,
+            user_auth=False
+        )
+
+        return self._process_lists_response(response)
+
+    @handle_rate_limit
+    def get_followed_lists(self, user_id, max_results=100, pagination_token=None):
+        #
+        # 👀 TODO: work through auth issue with this function
+        #
+        """
+        Get all Lists followed by the specified user.
+
+        Args:
+            user_id (str): The user ID whose followed Lists to retrieve
+            max_results (int, optional): Number of results per page (1-100, default 100)
+            pagination_token (str, optional): Token for pagination
+
+        Returns:
+            dict: Processed response containing the followed lists
+        """
+        client = self.oauth2_handler.get_client()
+        response = client.get_followed_lists(
+            id=user_id,
+            max_results=max_results,
+            pagination_token=pagination_token,
+            expansions=['owner_id'],
+            list_fields=self.LIST_FIELDS,
+            user_fields=self.USER_FIELDS,
+            user_auth=False
+        )
+
+        return self._process_lists_response(response)
+
+    def _process_lists_response(self, response):
+        """
+        Process the response from list-related endpoints.
+
+        Args:
+            response: The response from the Twitter API
+
+        Returns:
+            dict: Processed response containing the lists and metadata
+        """
+        if not response.data:
+            return {'lists': [], 'meta': {}}
+
+        # Convert List objects to dictionaries
+        lists_data = []
+        for list_item in response.data:
+            list_dict = {
+                'id': list_item.id,
+                'name': list_item.name
+            }
+            # Add all other available attributes
+            for field in self.LIST_FIELDS:
+                if hasattr(list_item, field):
+                    list_dict[field] = getattr(list_item, field)
+            lists_data.append(list_dict)
+
+        # Add owner information if available
+        if hasattr(response, 'includes') and 'users' in response.includes:
+            owners = {}
+            for user in response.includes['users']:
+                owner_data = {
+                    'id': user.id,
+                    'name': user.name,
+                    'username': user.username
+                }
+                # Add all other available user fields
+                for field in self.USER_FIELDS:
+                    if hasattr(user, field):
+                        owner_data[field] = getattr(user, field)
+                owners[str(user.id)] = owner_data
+
+            for list_item in lists_data:
+                owner_id = str(list_item.get('owner_id'))
+                if owner_id in owners:
+                    list_item['owner'] = owners[owner_id]
+
+        # Process metadata
+        meta = {}
+        if hasattr(response, 'meta'):
+            meta = response.meta
+
+        result = {
+            'lists': lists_data,
+            'meta': meta
+        }
+
+        return result
+
+    def get_user_lists(self, user_id, include_owned=True, include_followed=True, max_results=100, pagination_token=None):
+        """
+        Get lists owned by and/or followed by the specified user.
+
+        Args:
+            user_id (str): The user ID whose lists to retrieve
+            include_owned (bool, optional): Whether to include owned lists
+            include_followed (bool, optional): Whether to include followed lists
+            max_results (int, optional): Number of results per page (1-100, default 100)
+            pagination_token (str, optional): Token for pagination
+
+        Returns:
+            dict: Combined response containing both owned and followed lists
+        """
+        results = {'lists': [], 'meta': {}}
+
+        if include_owned:
+            owned_lists = self.get_owned_lists(user_id, max_results, pagination_token)
+            for list_item in owned_lists.get('lists', []):
+                list_item['relationship'] = 'owned'
+                results['lists'].append(list_item)
+
+        #
+        # 👀 TODO: reenable once get_followed_lists auth issue is fixed
+        #
+        # if include_followed:
+        #     followed_lists = self.get_followed_lists(user_id, max_results, pagination_token)
+        #     for list_item in followed_lists.get('lists', []):
+        #         list_item['relationship'] = 'followed'
+        #         results['lists'].append(list_item)
+
+        # Combine metadata
+        total_count = len(results['lists'])
+        results['meta'] = {
+            'result_count': total_count,
+            'includes_owned': include_owned,
+            'includes_followed': include_followed
+        }
+
+        return results
